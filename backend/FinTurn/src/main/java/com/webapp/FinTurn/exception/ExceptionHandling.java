@@ -88,26 +88,28 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
-        log.error(exception.getMessage());
         return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MSG);
     }
 
     @ExceptionHandler(NoResultException.class)
     public ResponseEntity<HttpResponse> notFoundException(NoResultException exception) {
-        log.error(exception.getMessage());
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    //todo check if i'll be using it webapp
     @ExceptionHandler(NotAnImageFileException.class)
     public ResponseEntity<HttpResponse> notAnImageFileException(NotAnImageFileException exception) {
-        log.error(exception.getMessage());
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<HttpResponse> iOException(IOException exception) {
-        log.error(exception.getMessage());
         return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE);
+    }
+
+    @RequestMapping(ERROR_PATH)
+    public ResponseEntity<HttpResponse> notFound404() {
+        return createHttpResponse(HttpStatus.NOT_FOUND, NO_MAPPING_FOR_URL);
     }
 
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message) {
@@ -116,22 +118,15 @@ public class ExceptionHandling implements ErrorController {
                 httpStatus,
                 httpStatus.getReasonPhrase().toUpperCase(),
                 message.toUpperCase());
-
+        log.info(
+                "ExceptionHandling/response -> Status code: " +
+                        httpResponse.getHttpStatusCode() +
+                        ", Reason Phrase: " +
+                        httpResponse.getReason() +
+                        ", Message: " +
+                        httpResponse.getMessage());
         return new ResponseEntity<>(
                 httpResponse,
                 httpStatus);
-    }
-
-    /**
-     * methods responsible for mapping /error, custom 404 mapping
-     *
-     */
-    @RequestMapping(ERROR_PATH)
-    public ResponseEntity<HttpResponse> notFound404() {
-        return createHttpResponse(HttpStatus.NOT_FOUND, NO_MAPPING_FOR_URL);
-    }
-    //    @Override
-    public String getErrorPath() {
-        return ERROR_PATH;
     }
 }
