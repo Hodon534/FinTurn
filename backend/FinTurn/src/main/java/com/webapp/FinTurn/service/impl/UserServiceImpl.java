@@ -1,5 +1,6 @@
 package com.webapp.FinTurn.service.impl;
 
+import com.webapp.FinTurn.constant.FileConstant;
 import com.webapp.FinTurn.domain.UserPrincipal;
 import com.webapp.FinTurn.domain.entity.UserEntity;
 import com.webapp.FinTurn.enumeration.UserRole;
@@ -11,7 +12,6 @@ import com.webapp.FinTurn.repository.UserRepository;
 import com.webapp.FinTurn.service.EmailService;
 import com.webapp.FinTurn.service.LoginAttemptService;
 import com.webapp.FinTurn.service.UserService;
-import com.webapp.FinTurn.utility.ImageProvider;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import java.io.File;
@@ -45,18 +46,15 @@ import static org.springframework.http.MediaType.*;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final ImageProvider imageProvider;
     private LoginAttemptService loginAttemptService;
     private EmailService emailService;
 
     public UserServiceImpl(UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder,
-                           ImageProvider imageProvider,
                            LoginAttemptService loginAttemptService,
                            EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.imageProvider = imageProvider;
         this.loginAttemptService = loginAttemptService;
         this.emailService = emailService;
     }
@@ -76,7 +74,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNotLocked(true);
         user.setRole(UserRole.ROLE_USER.name());
         user.setAuthorities(UserRole.ROLE_USER.getAuthorities());
-        user.setProfileImageUrl(imageProvider.getTemporaryProfileImageUrl(username));
+        user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         log.info("New user registered. Login: " + user.getUsername() + ", Password: " + password);
         //emailService.sendEmail(firstName, email);
@@ -116,7 +114,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNotLocked(isNotLocked);
         user.setRole(getRoleEnumName(role).name());
         user.setAuthorities(getRoleEnumName(role).getAuthorities());
-        user.setProfileImageUrl(imageProvider.getTemporaryProfileImageUrl(username));
+        user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         saveProfileImage(user, profileImage);
         log.info("New user added, Username: " + username + ", Password: " + password);
@@ -199,25 +197,46 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private void saveProfileImage(UserEntity user, MultipartFile profileImage) throws IOException {
         if (profileImage != null) {
+            /**
+             * If profileImage is not an image-type file, throw an exception
+             */
             if (!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
                 throw new NotAnImageFileException(profileImage.getOriginalFilename() + NOT_AN_IMAGE_FILE);
             }
+            /**
+             * Set folder path on the computer for that specific user
+             */
             Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
+            /**
+             * If that folder doesn't exist - create it and set logger
+             */
             if (!Files.exists(userFolder)) {
                 Files.createDirectories(userFolder);
                 log.info(DIRECTORY_CREATED + userFolder);
             }
+            /**
+             * Delete other files from that directory, if they exist
+             */
             Files.deleteIfExists(Paths.get(userFolder + user.getUsername(), DOT + JPG_EXTENSION));
+            /**
+             * Copy file and replace existing, if any
+             */
             Files.copy(profileImage.getInputStream(), userFolder.resolve(
                     user.getUsername() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
-            user.setProfileImageUrl(imageProvider.setProfileImageUrl(user.getUsername()));
+            user.setProfileImageUrl(setProfileImageUrl(user.getUsername()));
             userRepository.save(user);
             log.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
         }
     }
 
-    public String setProfileImageUrl(String username) {
-        return imageProvider.setProfileImageUrl(username);
+    private String getTemporaryProfileImageUrl(String username) {
+        log.info("get Temp profile image: " + ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString());
+
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString();
+    }
+
+    private String setProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH + username + DOT + JPG_EXTENSION).toUriString();
     }
 
 
