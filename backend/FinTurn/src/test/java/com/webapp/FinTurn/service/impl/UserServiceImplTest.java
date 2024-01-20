@@ -8,6 +8,7 @@ import com.webapp.FinTurn.repository.UserRepository;
 import com.webapp.FinTurn.service.EmailService;
 import com.webapp.FinTurn.service.LoginAttemptService;
 import com.webapp.FinTurn.service.UserService;
+import com.webapp.FinTurn.utility.ImageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,12 +36,14 @@ class UserServiceImplTest {
     private LoginAttemptService loginAttemptService;
     @Mock
     private EmailService emailService;
+    @Mock
+    private ImageProvider imageProvider;
     //private AutoCloseable autoCloseable;
 
     @BeforeEach
     void setUp() {
         //autoCloseable = MockitoAnnotations.openMocks(this);
-        underTest = new UserServiceImpl(userRepository, passwordEncoder, loginAttemptService, emailService);
+        underTest = new UserServiceImpl(userRepository, passwordEncoder, loginAttemptService, emailService, imageProvider);
     }
 
 /*    @AfterEach

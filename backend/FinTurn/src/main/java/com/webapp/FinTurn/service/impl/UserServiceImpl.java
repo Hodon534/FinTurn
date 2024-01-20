@@ -1,17 +1,16 @@
 package com.webapp.FinTurn.service.impl;
 
-import com.webapp.FinTurn.constant.FileConstant;
 import com.webapp.FinTurn.domain.UserPrincipal;
 import com.webapp.FinTurn.domain.entity.UserEntity;
 import com.webapp.FinTurn.enumeration.UserRole;
 import com.webapp.FinTurn.exception.domain.EmailExistException;
 import com.webapp.FinTurn.exception.domain.EmailNotFoundException;
-import com.webapp.FinTurn.exception.domain.NotAnImageFileException;
 import com.webapp.FinTurn.exception.domain.UsernameExistException;
 import com.webapp.FinTurn.repository.UserRepository;
 import com.webapp.FinTurn.service.EmailService;
 import com.webapp.FinTurn.service.LoginAttemptService;
 import com.webapp.FinTurn.service.UserService;
+import com.webapp.FinTurn.utility.ImageProvider;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,22 +22,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static com.webapp.FinTurn.constant.FileConstant.*;
 import static com.webapp.FinTurn.constant.UserServiceImplConstant.*;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static org.springframework.http.MediaType.*;
 
 @Slf4j
 @Transactional
@@ -48,15 +43,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
     private LoginAttemptService loginAttemptService;
     private EmailService emailService;
+    private final ImageProvider imageProvider;
 
     public UserServiceImpl(UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder,
                            LoginAttemptService loginAttemptService,
-                           EmailService emailService) {
+                           EmailService emailService,
+                           ImageProvider imageProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.loginAttemptService = loginAttemptService;
         this.emailService = emailService;
+        this.imageProvider = imageProvider;
     }
 
     @Override
@@ -74,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNotLocked(true);
         user.setRole(UserRole.ROLE_USER.name());
         user.setAuthorities(UserRole.ROLE_USER.getAuthorities());
-        user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
+        user.setProfileImageUrl(imageProvider.getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         log.info("New user registered. Login: " + user.getUsername() + ", Password: " + password);
         //emailService.sendEmail(firstName, email);
@@ -114,9 +112,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setNotLocked(isNotLocked);
         user.setRole(getRoleEnumName(role).name());
         user.setAuthorities(getRoleEnumName(role).getAuthorities());
-        user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
+        if (profileImage.isEmpty()) {
+            user.setProfileImageUrl(imageProvider.getTemporaryProfileImageUrl(username));
+        } else {
+            user.setProfileImageUrl(imageProvider.setProfileImage(username, profileImage));
+        }
         userRepository.save(user);
-        saveProfileImage(user, profileImage);
         log.info("New user added, Username: " + username + ", Password: " + password);
         return user;
     }
@@ -134,8 +135,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         currentUser.setNotLocked(isNotLocked);
         currentUser.setRole(getRoleEnumName(role).name());
         currentUser.setAuthorities(getRoleEnumName(role).getAuthorities());
+        if (!profileImage.isEmpty()) {
+            currentUser.setProfileImageUrl(imageProvider.setProfileImage(currentUsername, profileImage));
+        }
         userRepository.save(currentUser);
-        saveProfileImage(currentUser, profileImage);
         return currentUser;
     }
 
@@ -162,7 +165,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserEntity updateProfileImage(String username, MultipartFile newProfileImage) throws IOException, EmailExistException, UsernameExistException {
         UserEntity user = validateNewUsernameAndEmail(username, null, null);
-        saveProfileImage(user, newProfileImage);
+        user.setProfileImageUrl(imageProvider.setProfileImage(username, newProfileImage));
+        userRepository.save(user);
         return user;
     }
 
@@ -195,51 +199,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    private void saveProfileImage(UserEntity user, MultipartFile profileImage) throws IOException {
-        if (profileImage != null) {
-            /**
-             * If profileImage is not an image-type file, throw an exception
-             */
-            if (!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
-                throw new NotAnImageFileException(profileImage.getOriginalFilename() + NOT_AN_IMAGE_FILE);
-            }
-            /**
-             * Set folder path on the computer for that specific user
-             */
-            Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
-            /**
-             * If that folder doesn't exist - create it and set logger
-             */
-            if (!Files.exists(userFolder)) {
-                Files.createDirectories(userFolder);
-                log.info(DIRECTORY_CREATED + userFolder);
-            }
-            /**
-             * Delete other files from that directory, if they exist
-             */
-            Files.deleteIfExists(Paths.get(userFolder + user.getUsername(), DOT + JPG_EXTENSION));
-            /**
-             * Copy file and replace existing, if any
-             */
-            Files.copy(profileImage.getInputStream(), userFolder.resolve(
-                    user.getUsername() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
-            user.setProfileImageUrl(setProfileImageUrl(user.getUsername()));
-            userRepository.save(user);
-            log.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
-        }
-    }
-
-    private String getTemporaryProfileImageUrl(String username) {
-        log.info("get Temp profile image: " + ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString());
-
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString();
-    }
-
-    private String setProfileImageUrl(String username) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH + username + DOT + JPG_EXTENSION).toUriString();
-    }
-
-
     /**
      * extract number 10 to a different const
      * @return
@@ -263,10 +222,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRole getRoleEnumName(String role) {
         return UserRole.valueOf(role.toUpperCase());
     }
-
-    /*public String getTemporaryProfileImageUrl(String username) {
-        return temporaryImageProvider.getTemporaryProfileImageUrl(username);
-    }*/
 
     private UserEntity validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail) throws UsernameExistException, EmailExistException {
         UserEntity userByNewUsername = findUserByUsername(newUsername);
