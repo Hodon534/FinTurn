@@ -38,18 +38,11 @@ class UserServiceImplTest {
     private EmailService emailService;
     @Mock
     private ImageProvider imageProvider;
-    //private AutoCloseable autoCloseable;
 
     @BeforeEach
     void setUp() {
-        //autoCloseable = MockitoAnnotations.openMocks(this);
         underTest = new UserServiceImpl(userRepository, passwordEncoder, loginAttemptService, emailService, imageProvider);
     }
-
-/*    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }*/
 
     @Test
     void shouldRegisterSuccessfully() throws EmailExistException, UsernameExistException {
@@ -60,7 +53,7 @@ class UserServiceImplTest {
         String email = "paul@email.com";
         String password = "password";
         // When
-        //when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
+        when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
         underTest.register(firstName, lastName, username, email, password);
         // Then
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor =
@@ -100,9 +93,8 @@ class UserServiceImplTest {
         verify(userRepository).findUserByEmail(email);
     }
 
-    //@Disabled //fix method with saving picture
     @Test
-    void canAddNewUser() throws EmailExistException, IOException, UsernameExistException {
+    void canAddNewUserWithFileImage() throws EmailExistException, IOException, UsernameExistException {
         // Given
         String firstName = "John";
         String lastName = "Paul";
@@ -115,6 +107,27 @@ class UserServiceImplTest {
                 "image", "image", MediaType.IMAGE_PNG_VALUE, new byte[] {1});
         // When
         //when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
+        underTest.addNewUser(firstName, lastName, username, email, role, isNotLocked, isActive, profileImage);
+        // Then
+        ArgumentCaptor<UserEntity> userEntityArgumentCaptor =
+                ArgumentCaptor.forClass(UserEntity.class);
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
+    }
+
+    @Test
+    void canAddNewUserWithTempImage() throws EmailExistException, IOException, UsernameExistException {
+        // Given
+        String firstName = "John";
+        String lastName = "Paul";
+        String username = "paulson";
+        String email = "paul@email.com";
+        boolean isActive = true;
+        boolean isNotLocked = true;
+        String role = UserRole.ROLE_USER.name();
+        MultipartFile profileImage = new MockMultipartFile(
+                "noImage", "emptyFile", MediaType.IMAGE_PNG_VALUE, new byte[0]);
+        // When
+        when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
         underTest.addNewUser(firstName, lastName, username, email, role, isNotLocked, isActive, profileImage);
         // Then
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor =

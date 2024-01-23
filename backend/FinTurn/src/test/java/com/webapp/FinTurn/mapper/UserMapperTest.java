@@ -35,7 +35,7 @@ class UserMapperTest {
         dto.setPassword("password");
         dto.setNotLocked(true);
         dto.setActive(true);
-        dto.setProfileImageUrl("url");
+        dto.setProfileImageUrl("tempImage");
         dto.setLastLoginDate(new Date());
         dto.setJoinDate(new Date());
         dto.setLastLoginDateDisplay(new Date());
@@ -76,7 +76,7 @@ class UserMapperTest {
             entity.setPassword("password");
             entity.setNotLocked(true);
             entity.setActive(true);
-            entity.setProfileImageUrl("url");
+            entity.setProfileImageUrl("tempImage");
             entity.setLastLoginDate(new Date());
             entity.setJoinDate(new Date());
             entity.setLastLoginDateDisplay(new Date());
