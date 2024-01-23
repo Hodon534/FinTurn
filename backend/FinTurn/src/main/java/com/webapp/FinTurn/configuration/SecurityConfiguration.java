@@ -62,7 +62,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-/*    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-    }*/
+    }
 }
