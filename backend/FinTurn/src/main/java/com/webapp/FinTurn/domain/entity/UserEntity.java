@@ -8,6 +8,8 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@ToString
+@Builder
 @Entity
 @Getter
 @Setter
