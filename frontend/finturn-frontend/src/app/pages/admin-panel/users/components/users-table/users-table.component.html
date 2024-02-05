@@ -1,0 +1,93 @@
+<table class="w-full text-sm  text-center text-gray-500 dark:text-gray-400 table-auto">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+            
+            <th scope="col" class="px-6 py-3">
+                Photo
+            </th>
+            <th scope="col" class="px-6 py-3">
+                User ID
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Username
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Email
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Active
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Unlocked
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
+
+            <td>
+                <div class="py-2 flex flex-row justify-center">
+                    <img class="w-12 h-12 rounded-full" src="https://robohash.org/CQC" alt="Jese image">
+                </div>
+                
+            </td>
+            <td>
+                <div class="py-4">
+                1234567890
+            </div>
+            </td>
+            <td>
+                <div class="">
+                    <div class="text-base font-semibold">Neil Sims</div>
+                </div> 
+            </td>
+            
+            <td>
+                <div>
+                    <div class="text-base font-semibold">email</div>
+                </div>  
+                
+            </td>
+            <td>
+                <div class="px-6 py-4 flex items-center justify-center">
+                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+                </div>
+            </td>
+            <td>
+                <div class="px-6 py-4 flex items-center justify-center">
+                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>                    
+                </div>
+            </td>
+            <td>
+                <div class="px-6 py-4 flex justify-center items-center">
+                    <svg class="w-6 h-6 me-3 text-gray-800 dark:text-white cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                    fill="currentColor" viewBox="0 0 24 24" data-tooltip-target="tooltip-edit-user"
+                    data-modal-target="edit-user-modal" data-modal-toggle="edit-user-modal"
+                    >
+                        <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.8 1.3l-2.5 2.5A4 4 0 0 1 5 8Zm4 5H7a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h2.2a3 3 0 0 1-.1-1.6l.6-3.4a3 3 0 0 1 .9-1.5L9 13Zm9-5a3 3 0 0 0-2 .9l-6 6a1 1 0 0 0-.3.5L9 18.8a1 1 0 0 0 1.2 1.2l3.4-.7c.2 0 .3-.1.5-.3l6-6a3 3 0 0 0-2-5Z" clip-rule="evenodd"/>
+                      </svg>
+                      <div id="tooltip-edit-user" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                          Edit User
+                          <div class="tooltip-arrow" data-popper-arrow></div>
+                      </div>
+                    
+                      <svg class="w-6 h-6 ms-3 text-gray-800 dark:text-white cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                      fill="currentColor" viewBox="0 0 24 24" data-tooltip-target="tooltip-delete-user" 
+                      data-modal-target="delete-user-modal" data-modal-toggle="delete-user-modal"
+                      >
+                        <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd"/>
+                      </svg>
+                      <div id="tooltip-delete-user" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Delete User
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>       
+                </div>  
+                <!-- <a href="#" type="button" data-modal-target="editUserModal" data-modal-show="editUserModal" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a> -->
+            </td>
+        </tr>
+
+    </tbody>
+</table>
