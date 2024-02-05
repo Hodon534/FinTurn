@@ -10,5 +10,6 @@ public class ExceptionMessageConstant {
     public static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
     public static final String NO_MAPPING_FOR_URL = "There is no mapping for this URL";
     public static final String PAGE_NOT_FOUND = "This page was not found";
+    public static final String HTTP_RESPONSE_CODE = "HttpResponseCode: ";
     public static final String ERROR_PATH = "/error";
 }
