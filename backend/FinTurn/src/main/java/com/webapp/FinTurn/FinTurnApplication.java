@@ -12,7 +12,7 @@ public class FinTurnApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FinTurnApplication.class, args);
 		new File(FileConstant.USER_FOLDER).mkdirs(); // create folder in User Directory
-
-	}
+		//sourceConnection.requestData("https://financialmodelingprep.com/api/v3/profile/AAPL?apikey=9d4755d5ea3df8a80fd55985527c1a41");
+    }
 
 }
