@@ -42,7 +42,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping(path = "/user")
+@RequestMapping(path = "")
 public class UserController extends ExceptionHandling {
     public static final String EMAIL_SENT = "An email with a new password was sent to: ";
     public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
@@ -69,7 +69,7 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/user/add")
     public ResponseEntity<UserDto> addNewUser(@RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName,
                                            @RequestParam("username") String username,
@@ -85,7 +85,7 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/user/update")
     public ResponseEntity<UserDto> updateUser(@RequestParam("currentUsername") String currentUsername,
                                            @RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName,
@@ -102,34 +102,34 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
     }
 
-    @GetMapping("/find/{username}")
+    @GetMapping("/user/find/{username}")
     public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
         UserEntity user = userService.findUserByUsername(username);
         UserDto mappedUserDto = userMapper.mapUserEntityToDto(user);
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/user/list")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserEntity> users = userService.getUsers();
         List<UserDto> mappedDtoUsers = users.stream().map(user -> userMapper.mapUserEntityToDto(user)).toList();
         return new ResponseEntity<>(mappedDtoUsers, HttpStatus.OK);
     }
 
-    @GetMapping("/resetPassword/{email}")
+    @GetMapping("/reset-password/{email}")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws EmailNotFoundException, MessagingException {
         userService.resetPassword(email);
         return response(HttpStatus.OK, EMAIL_SENT + email);
     }
 
-    @DeleteMapping("/delete/{username}")
+    @DeleteMapping("/user/delete/{username}")
     @PreAuthorize("hasAnyAuthority('user:delete')")
     public ResponseEntity<HttpResponse> deleteUser(@PathVariable("username") String username) throws IOException {
         userService.deleteUser(username);
         return response(HttpStatus.OK, USER_DELETED_SUCCESSFULLY);
     }
 
-    @PostMapping("/updateProfileImage")
+    @PostMapping("/user/update-profile-image")
     public ResponseEntity<UserDto> updateProfileImage(
             @RequestParam("username") String username, @RequestParam(value = "profileImage") MultipartFile profileImage)
             throws EmailExistException, IOException, UsernameExistException {
@@ -138,13 +138,13 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/image/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
+    @GetMapping(path = "/user/image/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getProfileImage(@PathVariable("username") String username,
                                   @PathVariable("fileName") String fileName) throws IOException {
         return Files.readAllBytes(Paths.get(USER_FOLDER + username + FORWARD_SLASH + fileName));
     }
 
-    @GetMapping(path = "/image/profile/{username}", produces = IMAGE_JPEG_VALUE)
+    @GetMapping(path = "/user/image/profile/{username}", produces = IMAGE_JPEG_VALUE)
     public byte[] getTempProfileImage(@PathVariable("username") String username) throws IOException {
         URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + username);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
