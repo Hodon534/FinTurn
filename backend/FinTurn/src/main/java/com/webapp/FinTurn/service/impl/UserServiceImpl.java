@@ -37,7 +37,7 @@ import static com.webapp.FinTurn.constant.UserServiceImplConstant.*;
 
 @Slf4j
 @Transactional
-@Service("UserDetailsService") //todo read
+@Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;

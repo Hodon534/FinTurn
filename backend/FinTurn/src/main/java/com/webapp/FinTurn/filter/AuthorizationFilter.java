@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 @Component
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+public class AuthorizationFilter extends OncePerRequestFilter {
 
     private JWTTokenProvider jwtTokenProvider;
     @Override

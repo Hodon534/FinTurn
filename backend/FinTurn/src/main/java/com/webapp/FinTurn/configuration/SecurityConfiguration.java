@@ -1,9 +1,9 @@
 package com.webapp.FinTurn.configuration;
 
 import com.webapp.FinTurn.constant.SecurityConstant;
-import com.webapp.FinTurn.filter.JwtAccessDeniedHandler;
-import com.webapp.FinTurn.filter.JwtAuthenticationEntryPoint;
-import com.webapp.FinTurn.filter.JwtAuthorizationFilter;
+import com.webapp.FinTurn.filter.AccessDeniedHandler;
+import com.webapp.FinTurn.filter.AuthenticationEntryPoint;
+import com.webapp.FinTurn.filter.AuthorizationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,9 +25,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(proxyTargetClass = true)
 @Configuration
 public class SecurityConfiguration {
-    private JwtAuthorizationFilter jwtAuthorizationFilter;
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private AuthorizationFilter authorizationFilter;
+    private AccessDeniedHandler accessDeniedHandler;
+    private AuthenticationEntryPoint authenticationEntryPoint;
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -51,13 +51,13 @@ public class SecurityConfiguration {
                 .exceptionHandling(
                         exceptionHandlingConfigurer ->
                                 exceptionHandlingConfigurer.accessDeniedHandler(
-                                        jwtAccessDeniedHandler))
+                                        accessDeniedHandler))
                 .httpBasic(
                         httpBasicConfigurer ->
                                 httpBasicConfigurer.authenticationEntryPoint(
-                                        jwtAuthenticationEntryPoint))
+                                        authenticationEntryPoint))
                 .addFilterBefore(
-                        jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                        authorizationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
     }
