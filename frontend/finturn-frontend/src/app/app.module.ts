@@ -11,7 +11,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { UsersComponent } from './pages/admin-panel/users/users.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TabsComponent } from './pages/admin-panel/components/tabs/tabs.component';
 import { DashboardComponent } from './pages/admin-panel/dashboard/dashboard.component';
 import { SettingsComponent } from './pages/admin-panel/settings/settings.component';
@@ -22,6 +22,14 @@ import { AdduserComponent } from './pages/admin-panel/users/components/modals/ad
 import { EdituserComponent } from './pages/admin-panel/users/components/modals/edituser/edituser.component';
 import { ViewuserComponent } from './pages/admin-panel/users/components/modals/viewuser/viewuser.component';
 import { DeleteuserComponent } from './pages/admin-panel/users/components/modals/deleteuser/deleteuser.component';
+import { TestsidebarComponent } from './components/testsidebar/testsidebar.component';
+import { FormsModule } from '@angular/forms';
+import { NotificationService } from './service/notification.service';
+import { AuthenticationGuard } from './guard/authentication.guard';
+import { AuthenticationService } from './service/authentication.service';
+import { UserService } from './service/user.service';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
+import { NotificationModule } from './notification.module';
 
 
 @NgModule({
@@ -42,17 +50,26 @@ import { DeleteuserComponent } from './pages/admin-panel/users/components/modals
     EdituserComponent,
     ViewuserComponent,
     DeleteuserComponent,
+    TestsidebarComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatIconModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    NotificationModule
   ],
   providers: [
-    provideClientHydration()
-  ],
-  bootstrap: [AppComponent]
+    NotificationService,
+    AuthenticationGuard,
+    AuthenticationService,
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
+    }],
+    bootstrap: [AppComponent]
+    //provideClientHydration()
 })
 export class AppModule { }
