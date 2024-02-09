@@ -27,11 +27,11 @@ export class UserService {
 
   //todo change return data from any to User
   public resetPassword(email: string): Observable<CustomHttpResponse> {
-    return this.http.get<CustomHttpResponse>(`${this.host}/user/resetPassword/${email}`);
+    return this.http.get<CustomHttpResponse>(`${this.host}/reset-password/${email}`);
   }
 
   public updateProfileImge(formData: FormData): Observable<HttpEvent<User>> {
-    return this.http.post<User>(`${this.host}/user/updateProfileImage`, formData,
+    return this.http.post<User>(`${this.host}/user/update-profile-image`, formData,
     {
       reportProgress: true,
       observe: 'events'
@@ -59,8 +59,6 @@ export class UserService {
   public createUserFormData(loggedInUsername: string, user: User, profileImage: File): FormData {
     const formData = new FormData();
     formData.append('currentUsername', loggedInUsername);
-    formData.append('firstName', user.firstName);
-    formData.append('lastName', user.lastName);
     formData.append('username', user.username);
     formData.append('email', user.email);
     formData.append('role', user.role);
