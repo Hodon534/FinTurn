@@ -25,40 +25,42 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody *ngFor="let appUser of users">
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
 
             <td>
                 <div class="py-2 flex flex-row justify-center">
-                    <img class="w-12 h-12 rounded-full" src="https://robohash.org/CQC" alt="Jese image">
+                    <img class="w-12 h-12 rounded-full" src="{{ appUser?.profileImageUrl }}" alt="Jese image">
                 </div>
                 
             </td>
             <td>
-                <div class="py-4">
-                1234567890
+                <div class="py-4" (click)="onSelectUser(appUser)">
+                    {{ appUser?.userId }}
             </div>
             </td>
             <td>
-                <div class="">
-                    <div class="text-base font-semibold">Neil Sims</div>
+                <div class="" (click)="onSelectUser(appUser)">
+                    <div class="text-base font-semibold">{{ appUser?.username }}</div>
                 </div> 
             </td>
             
             <td>
                 <div>
-                    <div class="text-base font-semibold">email</div>
+                    <div class="text-base font-semibold" (click)="onSelectUser(appUser)">{{ appUser?.email }}</div>
                 </div>  
                 
             </td>
             <td>
-                <div class="px-6 py-4 flex items-center justify-center">
-                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+                <div class="px-6 py-4 flex items-center justify-center" (click)="onSelectUser(appUser)">
+                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" [hidden]="!appUser?.active"></div>
+                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" [hidden]="appUser?.active"></div>
                 </div>
             </td>
             <td>
-                <div class="px-6 py-4 flex items-center justify-center">
-                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>                    
+                <div class="px-6 py-4 flex items-center justify-center" (click)="onSelectUser(appUser)">
+                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" [hidden]="!appUser?.notLocked"></div>  
+                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" [hidden]="appUser?.notLocked"></div>                    
                 </div>
             </td>
             <td>
@@ -99,3 +101,6 @@
 
     </tbody>
 </table>
+
+<!-- <button [hidden]="true" type="button" id="viewUser" data-toggle="modal" data-target="#view-user-modal"> 
+</button> -->
