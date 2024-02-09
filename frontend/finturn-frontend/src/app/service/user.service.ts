@@ -9,7 +9,8 @@ import { User } from '../model/user';
   providedIn: 'root'
 })
 export class UserService {
-  private host = environment.apiUrl;
+  public host: string = "http://localhost:8081";
+  //private host = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
