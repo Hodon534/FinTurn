@@ -28,8 +28,6 @@ class UserMapperTest {
         UserDto dto = new UserDto();
         dto.setId(1234);
         dto.setUserId("1234567890");
-        dto.setFirstName("John");
-        dto.setLastName("Paul");
         dto.setUsername("paulson");
         dto.setEmail("paul@email.com");
         dto.setPassword("password");
@@ -47,8 +45,6 @@ class UserMapperTest {
         assertAll(
                 () -> assertEquals(entity.getId(), dto.getId()),
                 () -> assertEquals(entity.getUserId(), dto.getUserId()),
-                () -> assertEquals(entity.getFirstName(), dto.getFirstName()),
-                () -> assertEquals(entity.getLastName(), dto.getLastName()),
                 () -> assertEquals(entity.getUsername(), dto.getUsername()),
                 () -> assertEquals(entity.getEmail(), dto.getEmail()),
                 () -> assertEquals(entity.getPassword(), dto.getPassword()),
@@ -69,8 +65,6 @@ class UserMapperTest {
             UserEntity entity = new UserEntity();
             entity.setId(12444L);
             entity.setUserId("1234567890");
-            entity.setFirstName("John");
-            entity.setLastName("Paul");
             entity.setUsername("paulson");
             entity.setEmail("paul@email.com");
             entity.setPassword("password");
@@ -88,8 +82,6 @@ class UserMapperTest {
             assertAll(
                     () -> assertEquals(dto.getId(), entity.getId()),
                     () -> assertEquals(dto.getUserId(), entity.getUserId()),
-                    () -> assertEquals(dto.getFirstName(), entity.getFirstName()),
-                    () -> assertEquals(dto.getLastName(), entity.getLastName()),
                     () -> assertEquals(dto.getUsername(), entity.getUsername()),
                     () -> assertEquals(dto.getEmail(), entity.getEmail()),
                     () -> assertEquals(dto.getPassword(), entity.getPassword()),

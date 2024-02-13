@@ -20,19 +20,19 @@ import java.util.Properties;
 public class EmailServiceImpl implements EmailService {
 
     @Override
-    public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
+    public void sendNewPasswordEmail(String username, String password, String email) throws MessagingException {
         String text = EMAIL_NEW_PASSWORD_TEXT + password + EMAIL_SPACING_ABOVE_SIGNATURE + EMAIL_SIGNATURE;
         this.sendEmail(email, EMAIL_SUBJECT_NEW_PASSWORD, text);
     }
 
     @Override
-    public void sendRegisterEmail(String firstName, String email) throws MessagingException {
+    public void sendRegisterEmail(String username, String email) throws MessagingException {
         String text = EMAIL_REGISTERED_TEXT + EMAIL_SPACING_ABOVE_SIGNATURE + EMAIL_SIGNATURE;
         this.sendEmail(email, EMAIL_SUBJECT_REGISTERED_ACCOUNT, text);
     }
 
     @Override
-    public void sendAddedUserEmail(String firstName, String password, String email) throws MessagingException {
+    public void sendAddedUserEmail(String username, String password, String email) throws MessagingException {
         String text = EMAIL_NEW_ACCOUNT_ADDED_TEXT + password + EMAIL_SPACING_ABOVE_SIGNATURE + EMAIL_SIGNATURE;
         this.sendEmail(email, EMAIL_NEW_ACCOUNT_ADDED_TEXT, text);
     }

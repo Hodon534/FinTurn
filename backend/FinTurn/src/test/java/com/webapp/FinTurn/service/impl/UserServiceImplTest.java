@@ -44,14 +44,12 @@ class UserServiceImplTest {
     @Test
     void shouldRegisterSuccessfully() throws EmailExistException, UsernameExistException {
         // Given
-        String firstName = "John";
-        String lastName = "Paul";
         String username = "paulson";
         String email = "paul@email.com";
         String password = "password";
         // When
         when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
-        underTest.register(firstName, lastName, username, email, password);
+        underTest.register(username, email, password);
         // Then
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor =
                 ArgumentCaptor.forClass(UserEntity.class);
@@ -93,8 +91,6 @@ class UserServiceImplTest {
     @Test
     void canAddNewUserWithFileImage() throws EmailExistException, IOException, UsernameExistException {
         // Given
-        String firstName = "John";
-        String lastName = "Paul";
         String username = "paulson";
         String email = "paul@email.com";
         boolean isActive = true;
@@ -104,7 +100,7 @@ class UserServiceImplTest {
                 "image", "image", MediaType.IMAGE_PNG_VALUE, new byte[] {1});
         // When
         //when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
-        underTest.addNewUser(firstName, lastName, username, email, role, isNotLocked, isActive, profileImage);
+        underTest.addNewUser(username, email, role, isNotLocked, isActive, profileImage);
         // Then
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor =
                 ArgumentCaptor.forClass(UserEntity.class);
@@ -114,8 +110,6 @@ class UserServiceImplTest {
     @Test
     void canAddNewUserWithTempImage() throws EmailExistException, IOException, UsernameExistException {
         // Given
-        String firstName = "John";
-        String lastName = "Paul";
         String username = "paulson";
         String email = "paul@email.com";
         boolean isActive = true;
@@ -125,7 +119,7 @@ class UserServiceImplTest {
                 "noImage", "emptyFile", MediaType.IMAGE_PNG_VALUE, new byte[0]);
         // When
         when(imageProvider.getTemporaryProfileImageUrl(username)).thenReturn("tempImage");
-        underTest.addNewUser(firstName, lastName, username, email, role, isNotLocked, isActive, profileImage);
+        underTest.addNewUser(username, email, role, isNotLocked, isActive, profileImage);
         // Then
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor =
                 ArgumentCaptor.forClass(UserEntity.class);

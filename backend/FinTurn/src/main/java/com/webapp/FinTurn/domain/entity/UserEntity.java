@@ -26,8 +26,6 @@ public class UserEntity implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String userId;
-    private String firstName;
-    private String lastName;
     private String username;
     /**
      * Hide password in the backend

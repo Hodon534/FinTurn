@@ -39,7 +39,7 @@ import static com.webapp.FinTurn.constant.UserServiceImplConstant.*;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private EmailService emailService;
+    private final EmailService emailService;
     private final ImageProvider imageProvider;
 
     public UserServiceImpl(UserRepository userRepository,
@@ -53,12 +53,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity register(String firstName, String lastName, String username, String email, String password) throws EmailExistException, UsernameExistException {
+    public UserEntity register(String username, String email, String password) throws EmailExistException, UsernameExistException {
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
         UserEntity user = new UserEntity();
         user.setUserId(generateUserId());
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(encodePassword(password));
@@ -90,15 +88,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity addNewUser(String firstName, String lastName, String username, String email,
+    public UserEntity addNewUser(String username, String email,
                                  String role, boolean isNotLocked, boolean isActive, MultipartFile profileImage)
             throws EmailExistException, UsernameExistException, IOException {
         validateNewUsernameAndEmail(EMPTY, username, email);
         UserEntity user = new UserEntity();
         String password = generatePassword();
         user.setUserId(generateUserId());
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
         user.setUsername(username);
         user.setPassword(encodePassword(password));
         user.setEmail(email);
@@ -118,12 +114,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername,
+    public UserEntity updateUser(String currentUsername, String newUsername,
                                  String newEmail, String role, boolean isNotLocked, boolean isActive, MultipartFile profileImage)
             throws EmailExistException, UsernameExistException, IOException {
         UserEntity currentUser = validateNewUsernameAndEmail(currentUsername, newUsername, newEmail);
-        currentUser.setFirstName(newFirstName);
-        currentUser.setLastName(newLastName);
         currentUser.setUsername(newUsername);
         currentUser.setEmail(newEmail);
         currentUser.setActive(isActive);
@@ -154,7 +148,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String password = generatePassword();
         user.setPassword(encodePassword(password));
         userRepository.save(user);
-        emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
+        emailService.sendNewPasswordEmail(user.getUsername(), password, user.getEmail());
     }
 
     @Override
@@ -216,11 +210,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
                 throw new UsernameExistException(USERNAME_ALREADY_EXIST);
             }
-            if (userByNewEmail != null && !currentUser.getId().equals(userByNewEmail.getEmail())) {
+            if (userByNewEmail != null) {
                 throw new EmailExistException(EMAIL_ALREADY_EXIST);
             }
             return currentUser;
-        } else { //todo verify else
+        } else {
             if (userByNewUsername != null) {
                 throw new UsernameExistException(USERNAME_ALREADY_EXIST);
             }
