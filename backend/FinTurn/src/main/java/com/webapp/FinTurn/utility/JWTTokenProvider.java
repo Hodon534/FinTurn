@@ -36,7 +36,6 @@ public class JWTTokenProvider {
         String[] claims = getClaimsFromUser(userPrincipal);
         return JWT.create()
                 .withIssuer(SecurityConstant.COMPANY_NAME)
-                .withAudience(SecurityConstant.COMPANY_NAME_ADMINISTRATION)
                 .withIssuedAt(new Date())
                 .withSubject(userPrincipal.getUsername())
                 .withArrayClaim(SecurityConstant.AUTHORITIES, claims)
