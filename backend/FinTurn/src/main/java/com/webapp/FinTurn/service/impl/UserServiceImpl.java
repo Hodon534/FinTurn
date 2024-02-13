@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity register(String username, String email, String password) throws EmailExistException, UsernameExistException {
+    public UserEntity register(String username, String email, String password) throws EmailExistException, UsernameExistException, MessagingException {
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
         UserEntity user = new UserEntity();
         user.setUserId(generateUserId());
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setProfileImageUrl(imageProvider.getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         log.info("New user registered. Login: " + user.getUsername() + ", Password: " + password);
-        //emailService.sendEmail(firstName, email);
+        emailService.sendRegisterEmail(username, email);
         return user;
     }
 
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserEntity addNewUser(String username, String email,
                                  String role, boolean isNotLocked, boolean isActive, MultipartFile profileImage)
-            throws EmailExistException, UsernameExistException, IOException {
+            throws EmailExistException, UsernameExistException, IOException, MessagingException {
         validateNewUsernameAndEmail(EMPTY, username, email);
         UserEntity user = new UserEntity();
         String password = generatePassword();
@@ -109,6 +109,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setProfileImageUrl(imageProvider.setProfileImage(username, profileImage));
         }
         userRepository.save(user);
+        emailService.sendAddedUserEmail(username, password, email);
         log.info("New user added, Username: " + username + ", Password: " + password);
         return user;
     }

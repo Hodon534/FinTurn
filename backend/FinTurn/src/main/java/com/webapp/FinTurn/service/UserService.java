@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UserEntity register(String username, String email, String password) throws EmailExistException, UsernameExistException;
+    UserEntity register(String username, String email, String password) throws EmailExistException, UsernameExistException, MessagingException;
 
     List<UserEntity> getUsers();
 
@@ -21,7 +21,7 @@ public interface UserService {
     UserEntity findUserByEmail(String email);
 
     UserEntity addNewUser(String username, String email, String role, boolean isNotLocked, boolean isActive, MultipartFile profileImage)
-            throws EmailExistException, UsernameExistException, IOException;
+            throws EmailExistException, UsernameExistException, IOException, MessagingException;
 
     UserEntity updateUser(String currentUsername, String newUsername, String newEmail, String role, boolean isNotLocked, boolean isActive, MultipartFile profileImage)
             throws EmailExistException, UsernameExistException, IOException;
