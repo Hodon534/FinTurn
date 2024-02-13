@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,7 +61,7 @@ public class UserController extends ExceptionHandling {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) throws EmailExistException, UsernameExistException {
+    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) throws EmailExistException, UsernameExistException, MessagingException {
         UserEntity newUser = userService.register(userDto.getUsername(),
                 userDto.getEmail(), userDto.getPassword());
         UserDto mappedUserDto = userMapper.mapUserEntityToDto(newUser);
@@ -77,7 +76,7 @@ public class UserController extends ExceptionHandling {
                                            @RequestParam("isNotLocked") String isNotLocked,
                                            @RequestParam("isActive") String isActive,
                                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
-            throws EmailExistException, IOException, UsernameExistException {
+            throws EmailExistException, IOException, UsernameExistException, MessagingException {
         UserEntity newUser = userService.addNewUser(username, email, role,
                 Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNotLocked), profileImage);
         UserDto mappedUserDto = userMapper.mapUserEntityToDto(newUser);
