@@ -63,15 +63,14 @@ public class UserController extends ExceptionHandling {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) throws EmailExistException, UsernameExistException {
-        UserEntity newUser = userService.register(userDto.getFirstName(), userDto.getLastName(), userDto.getUsername(),
+        UserEntity newUser = userService.register(userDto.getUsername(),
                 userDto.getEmail(), userDto.getPassword());
         UserDto mappedUserDto = userMapper.mapUserEntityToDto(newUser);
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
     }
 
     @PostMapping("/user/add")
-    public ResponseEntity<UserDto> addNewUser(@RequestParam("firstName") String firstName,
-                                           @RequestParam("lastName") String lastName,
+    public ResponseEntity<UserDto> addNewUser(
                                            @RequestParam("username") String username,
                                            @RequestParam("email") String email,
                                            @RequestParam("role") String role,
@@ -79,7 +78,7 @@ public class UserController extends ExceptionHandling {
                                            @RequestParam("isActive") String isActive,
                                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
             throws EmailExistException, IOException, UsernameExistException {
-        UserEntity newUser = userService.addNewUser(firstName, lastName, username, email, role,
+        UserEntity newUser = userService.addNewUser(username, email, role,
                 Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNotLocked), profileImage);
         UserDto mappedUserDto = userMapper.mapUserEntityToDto(newUser);
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
@@ -87,8 +86,6 @@ public class UserController extends ExceptionHandling {
 
     @PostMapping("/user/update")
     public ResponseEntity<UserDto> updateUser(@RequestParam("currentUsername") String currentUsername,
-                                           @RequestParam("firstName") String firstName,
-                                           @RequestParam("lastName") String lastName,
                                            @RequestParam("username") String username,
                                            @RequestParam("email") String email,
                                            @RequestParam("role") String role,
@@ -96,7 +93,7 @@ public class UserController extends ExceptionHandling {
                                            @RequestParam("isActive") String isActive,
                                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
             throws EmailExistException, IOException, UsernameExistException {
-        UserEntity updatedUser = userService.updateUser(currentUsername, firstName, lastName, username, email, role,
+        UserEntity updatedUser = userService.updateUser(currentUsername, username, email, role,
                 Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNotLocked), profileImage);
         UserDto mappedUserDto = userMapper.mapUserEntityToDto(updatedUser);
         return new ResponseEntity<>(mappedUserDto, HttpStatus.OK);
