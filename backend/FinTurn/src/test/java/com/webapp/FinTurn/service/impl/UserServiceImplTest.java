@@ -6,7 +6,6 @@ import com.webapp.FinTurn.exception.domain.EmailExistException;
 import com.webapp.FinTurn.exception.domain.UsernameExistException;
 import com.webapp.FinTurn.repository.UserRepository;
 import com.webapp.FinTurn.service.EmailService;
-import com.webapp.FinTurn.service.LoginAttemptService;
 import com.webapp.FinTurn.service.UserService;
 import com.webapp.FinTurn.utility.ImageProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,15 +32,13 @@ class UserServiceImplTest {
     private UserService underTest;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Mock
-    private LoginAttemptService loginAttemptService;
-    @Mock
     private EmailService emailService;
     @Mock
     private ImageProvider imageProvider;
 
     @BeforeEach
     void setUp() {
-        underTest = new UserServiceImpl(userRepository, passwordEncoder, loginAttemptService, emailService, imageProvider);
+        underTest = new UserServiceImpl(userRepository, passwordEncoder, emailService, imageProvider);
     }
 
     @Test

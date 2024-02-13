@@ -8,7 +8,6 @@ import com.webapp.FinTurn.exception.domain.EmailNotFoundException;
 import com.webapp.FinTurn.exception.domain.UsernameExistException;
 import com.webapp.FinTurn.repository.UserRepository;
 import com.webapp.FinTurn.service.EmailService;
-import com.webapp.FinTurn.service.LoginAttemptService;
 import com.webapp.FinTurn.service.UserService;
 import com.webapp.FinTurn.utility.ImageProvider;
 import jakarta.transaction.Transactional;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -41,18 +39,15 @@ import static com.webapp.FinTurn.constant.UserServiceImplConstant.*;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private LoginAttemptService loginAttemptService;
     private EmailService emailService;
     private final ImageProvider imageProvider;
 
     public UserServiceImpl(UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder,
-                           LoginAttemptService loginAttemptService,
                            EmailService emailService,
                            ImageProvider imageProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.loginAttemptService = loginAttemptService;
         this.emailService = emailService;
         this.imageProvider = imageProvider;
     }
@@ -177,25 +172,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.error(NO_USER_FOUND_BY_USERNAME + username);
             throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
         } else {
-            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
             userRepository.save(user);
             UserPrincipal userPrincipal = new UserPrincipal(user);
             log.info(RETURNING_FOUND_USER_BY_USERNAME + username);
             return userPrincipal;
-        }
-    }
-
-    private void validateLoginAttempt(UserEntity user) {
-        if (user.isNotLocked()) {
-            if (loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
-                user.setNotLocked(false);
-            } else {
-                user.setNotLocked(true);
-            }
-        } else {
-            loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
         }
     }
 
