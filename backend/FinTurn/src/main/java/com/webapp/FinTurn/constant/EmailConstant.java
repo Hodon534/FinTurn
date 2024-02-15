@@ -5,7 +5,6 @@ public class EmailConstant {
     public static final String USERNAME = "springtesting123125@gmail.com";
     public static final String PASSWORD = "ymdxedvgibeifeus";
     public static final String FROM_EMAIL = "springtesting123125@gmail.com";
-    public static final String CC_EMAIL = "springtesting123125@gmail.com";
     public static final String EMAIL_SUBJECT_NEW_PASSWORD = "New Password has been generated";
     public static final String EMAIL_SUBJECT_REGISTERED_ACCOUNT = "You have successfully registered";
     public static final String EMAIL_SUBJECT_NEW_ACCOUNT_ADDED = "Your account had been successfully created";

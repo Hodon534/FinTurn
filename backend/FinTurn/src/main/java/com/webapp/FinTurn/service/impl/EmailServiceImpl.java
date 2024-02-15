@@ -52,7 +52,6 @@ public class EmailServiceImpl implements EmailService {
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false));
-        message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(CC_EMAIL, false));
         message.setSubject(subject);
         message.setText(text);
         message.setSentDate(new Date());
