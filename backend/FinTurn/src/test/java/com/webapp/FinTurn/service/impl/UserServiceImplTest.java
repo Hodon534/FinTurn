@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 
 import static org.mockito.Mockito.verify;
@@ -42,7 +43,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void shouldRegisterSuccessfully() throws EmailExistException, UsernameExistException {
+    void shouldRegisterSuccessfully() throws EmailExistException, UsernameExistException, MessagingException {
         // Given
         String username = "paulson";
         String email = "paul@email.com";
@@ -89,7 +90,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void canAddNewUserWithFileImage() throws EmailExistException, IOException, UsernameExistException {
+    void canAddNewUserWithFileImage() throws EmailExistException, IOException, UsernameExistException, MessagingException {
         // Given
         String username = "paulson";
         String email = "paul@email.com";
@@ -108,7 +109,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void canAddNewUserWithTempImage() throws EmailExistException, IOException, UsernameExistException {
+    void canAddNewUserWithTempImage() throws EmailExistException, IOException, UsernameExistException, MessagingException {
         // Given
         String username = "paulson";
         String email = "paul@email.com";
