@@ -11,6 +11,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+    /**
+     * Hide id in the backend
+     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private long id;
     private String userId;
