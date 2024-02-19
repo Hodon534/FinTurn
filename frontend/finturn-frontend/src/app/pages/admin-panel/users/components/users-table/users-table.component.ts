@@ -106,7 +106,7 @@ public onAddNewUser(userForm: NgForm) {
         this.profileImage = new File([],'');
         userForm.reset();
         this.sendNotification(NotificationType.SUCCESS, 
-          `${response.firstName} ${response.lastName} added successfully`);
+          `${response.username} added successfully`);
       },
       (errorResponse: HttpErrorResponse) => {
         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -131,7 +131,7 @@ public onUpdateUser() {
         this.fileName = null;
         this.profileImage = new File([],'');
         this.sendNotification(NotificationType.SUCCESS, 
-          `${response.firstName} ${response.lastName} updated successfully`);
+          `${response.username} updated successfully`);
       },
       (errorResponse: HttpErrorResponse) => {
         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -145,9 +145,7 @@ public onUpdateUser() {
   public searchUsers(searchTerm: string) {
     const results: User[] = [];
     for (const user of this.userService.getUsersFromLocalCache()) {
-      if (user.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
-          user.lastName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
-          user.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+      if (user.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
           user.email.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
           user.userId.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
             results.push(user);
@@ -175,7 +173,7 @@ public onUpdateUser() {
           this.fileName = null;
           this.profileImage = new File([],'');
           this.sendNotification(NotificationType.SUCCESS, 
-            `${response.firstName} ${response.lastName} updated successfully`);
+            `${response.username} updated successfully`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
