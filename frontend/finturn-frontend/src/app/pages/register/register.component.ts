@@ -22,12 +22,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // if (this.authenticationService.isLoggedIn()) {
-    //   this.router.navigateByUrl('/home');
-    // } 
+     if (this.authenticationService.isLoggedIn()) {
+       this.router.navigateByUrl('/home');
+     } 
   }
 
   onRegister(user: User) {
+    console.log(user)
     this.subscription.push(this.authenticationService.register(user).subscribe(
       (response: User) => {
         const message = `New account was created for ${response.username}.`

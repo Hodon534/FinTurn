@@ -17,7 +17,11 @@
                     </div>
                     <div>
                         <label for="email" class="input-label-style">Your email</label>
-                        <input type="email" name="email" id="email" class="input-style focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="">
+                        <input type="email" name="email" id="email" 
+                        class="input-style focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                        placeholder="name@company.com"
+                        ngModel #emailInput="ngModel" required 
+                        >
                     </div>
                     <div>
                         <label for="password" class="input-label-style">Password</label>
