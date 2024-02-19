@@ -9,13 +9,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 @ToString
-@Builder
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Enabled
 public class UserEntity implements Serializable {
     /**
      * Hide id in the backend
