@@ -6,11 +6,12 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { UsersComponent } from './pages/admin-panel/users/users.component';
 import { DashboardComponent } from './pages/admin-panel/dashboard/dashboard.component';
 import { SettingsComponent } from './pages/admin-panel/settings/settings.component';
+import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent
+    component: HomeComponent
   },
   {
     path: 'home',

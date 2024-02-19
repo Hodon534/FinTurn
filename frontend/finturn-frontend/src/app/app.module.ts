@@ -17,7 +17,6 @@ import { DashboardComponent } from './pages/admin-panel/dashboard/dashboard.comp
 import { SettingsComponent } from './pages/admin-panel/settings/settings.component';
 import { TopPanelComponent } from './pages/admin-panel/users/components/top-panel/top-panel.component';
 import { UsersTableComponent } from './pages/admin-panel/users/components/users-table/users-table.component';
-import { FooterComponent } from './components/footer/footer.component';
 import { AdduserComponent } from './pages/admin-panel/users/components/modals/adduser/adduser.component';
 import { EdituserComponent } from './pages/admin-panel/users/components/modals/edituser/edituser.component';
 import { ViewuserComponent } from './pages/admin-panel/users/components/modals/viewuser/viewuser.component';
@@ -30,6 +29,7 @@ import { AuthenticationService } from './service/authentication.service';
 import { UserService } from './service/user.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { NotificationModule } from './notification.module';
+import { HomeComponent } from './pages/home/home.component';
 
 
 @NgModule({
@@ -45,12 +45,12 @@ import { NotificationModule } from './notification.module';
     SettingsComponent,
     TopPanelComponent,
     UsersTableComponent,
-    FooterComponent,
     AdduserComponent,
     EdituserComponent,
     ViewuserComponent,
     DeleteuserComponent,
     TestsidebarComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
